@@ -6,9 +6,19 @@ from googleapiclient.discovery import build
 import os
 import json
 import base64
+import sys
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'your-secret-key-here')
+
+# Add debug info for deployment
+print(f"Flask app starting...")
+print(f"Python version: {sys.version}")
+print(f"PORT: {os.environ.get('PORT', 'Not set')}")
+print(f"FLASK_ENV: {os.environ.get('FLASK_ENV', 'Not set')}")
+print(f"REDIRECT_URI: {os.environ.get('REDIRECT_URI', 'Not set')}")
+print(f"SECRET_KEY: {'Set' if os.environ.get('SECRET_KEY') else 'Not set'}")
+print(f"GOOGLE_CREDENTIALS_BASE64: {'Set' if os.environ.get('GOOGLE_CREDENTIALS_BASE64') else 'Not set'}")
 
 # --- Google API Setup ---
 SCOPES = [
@@ -39,6 +49,20 @@ def get_google_credentials_file():
             print(f"Error decoding credentials from environment: {e}")
     
     return CLIENT_SECRETS_FILE  # Return default path anyway
+
+@app.route('/health')
+def health():
+    """Health check endpoint for debugging"""
+    return jsonify({
+        'status': 'healthy',
+        'python_version': sys.version,
+        'port': os.environ.get('PORT', 'Not set'),
+        'flask_env': os.environ.get('FLASK_ENV', 'Not set'),
+        'redirect_uri': os.environ.get('REDIRECT_URI', 'Not set'),
+        'secret_key_set': bool(os.environ.get('SECRET_KEY')),
+        'google_credentials_set': bool(os.environ.get('GOOGLE_CREDENTIALS_BASE64')),
+        'credentials_file_exists': os.path.exists(CLIENT_SECRETS_FILE)
+    })
 
 @app.route('/')
 def index():
@@ -184,16 +208,23 @@ def api_courses():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-if __name__ == '__main__':
-    # For cloud deployment - use PORT environment variable (Galaxy Cloud typically uses 8080)
-    port = int(os.environ.get('PORT', 8080))
+# Production configuration - runs when imported by Gunicorn
+def configure_app():
+    """Configure app for production deployment"""
     # Only set insecure transport for local development
     if os.environ.get('FLASK_ENV') == 'development':
         os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
+# Configure the app when module is imported
+configure_app()
+
+if __name__ == '__main__':
+    # For local development only
+    port = int(os.environ.get('PORT', 5000))
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # Allow HTTP for local dev
     
-    # Run the app
     app.run(
-        debug=os.environ.get('FLASK_ENV') == 'development', 
+        debug=True, 
         host='0.0.0.0', 
         port=port
     )
