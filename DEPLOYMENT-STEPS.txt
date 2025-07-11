@@ -1,0 +1,58 @@
+🚀 DEPLOYING GOOGLE CLASSROOM MANAGER - PYTHON FLASK APP
+===========================================================
+
+✅ CONFIRMED READY:
+- Python 3.11.9 Flask app
+- All dependencies tested
+- GitHub repo: dscquanta/google-classroom-manager
+- Branch: master
+
+🌐 GALAXY CLOUD DEPLOYMENT STEPS:
+=================================
+
+STEP 1: In Galaxy Cloud (opened in browser)
+-------------------------------------------
+1. Click "New App" button
+2. Select "Deploy from GitHub"
+
+STEP 2: Repository Configuration
+-------------------------------
+Repository URL: dscquanta/google-classroom-manager
+Branch: master
+App Name: academiapeople
+
+STEP 3: Build Configuration
+--------------------------
+Build Command: pip install -r requirements.txt
+Start Command: gunicorn webapp:app --host=0.0.0.0 --port=$PORT
+
+STEP 4: Environment Variables
+-----------------------------
+Copy these EXACTLY (each on a separate line):
+
+SECRET_KEY=MfR0745Ul7Fo96MA8btNzkYJ9wOtQD3W2Bdg89MyAtYvFUVQjhhxg4MvLpINhwqy
+
+FLASK_ENV=production
+
+PORT=8080
+
+REDIRECT_URI=https://academiapeople.galaxycloud.app/oauth2callback
+
+GOOGLE_CREDENTIALS_BASE64=ew0KICAid2ViIjogew0KICAgICJhdXRoX3Byb3ZpZGVyX3g1MDlfY2VydF91cmwiOiAiaHR0cHM6Ly93d3cuZ29vZ2xlYXBpcy5jb20vb2F1dGgyL3YxL2NlcnRzIiwNCiAgICAicHJvamVjdF9pZCI6ICJ0ZW1wLXByb2plY3QiLA0KICAgICJhdXRoX3VyaSI6ICJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20vby9vYXV0aDIvYXV0aCIsDQogICAgImNsaWVudF9zZWNyZXQiOiAiVEVNUF9DTElFTlRfU0VDUkVUIiwNCiAgICAidG9rZW5fdXJpIjogImh0dHBzOi8vb2F1dGgyLmdvb2dsZWFwaXMuY29tL3Rva2VuIiwNCiAgICAiY2xpZW50X2lkIjogIlRFTVBfQ0xJRU5UX0lEIiwNCiAgICAicmVkaXJlY3RfdXJpcyI6IFsNCiAgICAgICJodHRwczovL2FjYWRlbWlhcGVvcGxlLmdhbGF4eWNsb3VkLmFwcC9vYXV0aDJjYWxsYmFjayINCiAgICBdDQogIH0NCn0=
+
+STEP 5: Deploy
+--------------
+Click "Deploy" button and wait for completion
+
+🎯 RESULT:
+Your Python Flask app will be live at:
+https://academiapeople.galaxycloud.app
+
+🔧 App Features:
+- Google Classroom integration
+- Responsive web interface
+- User authentication
+- Course management
+- Assignment tracking
+
+Ready to deploy! 🚀

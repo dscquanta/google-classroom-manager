@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Classroom Manager - Deployment Guide</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .step { margin: 20px 0; padding: 15px; border-left: 4px solid #007acc; background: #f8f9fa; }
+        .step.completed { border-color: #28a745; background: #d4edda; }
+        .step h3 { margin-top: 0; color: #333; }
+        .code { background: #f1f1f1; padding: 10px; border-radius: 4px; font-family: monospace; margin: 10px 0; }
+        .url { color: #007acc; font-weight: bold; }
+        .success { color: #28a745; font-weight: bold; }
+        .warning { color: #ffc107; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+        .checkbox { margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Google Classroom Manager Deployment</h1>
+        <p><strong>Repository:</strong> <span class="url">https://github.com/dscquanta/google-classroom-manager</span></p>
+        <p><strong>Target URL:</strong> <span class="url">https://academiapeople.galaxycloud.app</span></p>
+        
+        <div class="step completed">
+            <h3>✅ Step 1: Code Repository (COMPLETED)</h3>
+            <p>Your code has been successfully pushed to GitHub.</p>
+            <div class="code">Repository: dscquanta/google-classroom-manager<br>Branch: master</div>
+        </div>
+
+        <div class="step">
+            <h3>📥 Step 2: Download Google Credentials</h3>
+            <p><input type="checkbox" class="checkbox"> Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a></p>
+            <p><input type="checkbox" class="checkbox"> Download OAuth 2.0 credentials as <code>credentials.json</code></p>
+            <p><input type="checkbox" class="checkbox"> Place the file in your project directory</p>
+        </div>
+
+        <div class="step">
+            <h3>🌐 Step 3: Galaxy Cloud Setup</h3>
+            <p><input type="checkbox" class="checkbox"> Go to <a href="https://beta.galaxycloud.app/d/us-east-1" target="_blank">Galaxy Cloud</a></p>
+            <p><input type="checkbox" class="checkbox"> Create new application</p>
+            <p><input type="checkbox" class="checkbox"> Connect GitHub repository: <code>dscquanta/google-classroom-manager</code></p>
+            <p><input type="checkbox" class="checkbox"> Select branch: <code>master</code></p>
+        </div>
+
+        <div class="step">
+            <h3>⚙️ Step 4: Environment Variables</h3>
+            <p>Add these environment variables in Galaxy Cloud:</p>
+            <div class="code">
+SECRET_KEY=MfR0745Ul7Fo96MA8btNzkYJ9wOtQD3W2Bdg89MyAtYvFUVQjhhxg4MvLpINhwqy<br>
+FLASK_ENV=production<br>
+REDIRECT_URI=https://academiapeople.galaxycloud.app/oauth2callback<br>
+PORT=8080
+            </div>
+            <p><input type="checkbox" class="checkbox"> Environment variables configured</p>
+        </div>
+
+        <div class="step">
+            <h3>🔑 Step 5: Upload Credentials</h3>
+            <p>Choose one option:</p>
+            <p><input type="checkbox" class="checkbox"> <strong>Option A:</strong> Upload <code>credentials.json</code> file directly</p>
+            <p><input type="checkbox" class="checkbox"> <strong>Option B:</strong> Convert to base64 and add as <code>GOOGLE_CREDENTIALS_BASE64</code> environment variable</p>
+        </div>
+
+        <div class="step">
+            <h3>🔧 Step 6: Google OAuth Configuration</h3>
+            <p><input type="checkbox" class="checkbox"> Go back to <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a></p>
+            <p><input type="checkbox" class="checkbox"> Edit your OAuth 2.0 Client ID</p>
+            <p><input type="checkbox" class="checkbox"> Add Authorized Redirect URI:</p>
+            <div class="code">https://academiapeople.galaxycloud.app/oauth2callback</div>
+        </div>
+
+        <div class="step">
+            <h3>🚀 Step 7: Deploy & Test</h3>
+            <p><input type="checkbox" class="checkbox"> Click "Deploy" in Galaxy Cloud</p>
+            <p><input type="checkbox" class="checkbox"> Monitor deployment logs</p>
+            <p><input type="checkbox" class="checkbox"> Test the app at: <a href="https://academiapeople.galaxycloud.app" target="_blank">https://academiapeople.galaxycloud.app</a></p>
+            <p><input type="checkbox" class="checkbox"> Test Google OAuth login</p>
+            <p><input type="checkbox" class="checkbox"> Verify courses load correctly</p>
+        </div>
+
+        <div class="step">
+            <h3>🎉 Step 8: Deployment Complete!</h3>
+            <p class="success">Your Google Classroom Manager is now live!</p>
+            <p><strong>Features available:</strong></p>
+            <ul>
+                <li>🔐 Google OAuth authentication</li>
+                <li>📚 Course management and viewing</li>
+                <li>📋 Assignment tracking and submissions</li>
+                <li>👥 Student roster management</li>
+                <li>📱 Responsive web interface</li>
+            </ul>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #e9ecef; border-radius: 4px;">
+            <h3>📞 Need Help?</h3>
+            <p>If you encounter any issues:</p>
+            <ul>
+                <li>Check Galaxy Cloud deployment logs</li>
+                <li>Verify all environment variables are set correctly</li>
+                <li>Ensure OAuth redirect URI matches exactly</li>
+                <li>Check Google Cloud Console for API quota limits</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Save checkbox states
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            const key = checkbox.parentElement.textContent.trim();
+            checkbox.checked = localStorage.getItem(key) === 'true';
+            
+            checkbox.addEventListener('change', function() {
+                localStorage.setItem(key, this.checked);
+                updateStepStatus();
+            });
+        });
+
+        function updateStepStatus() {
+            document.querySelectorAll('.step').forEach((step, index) => {
+                if (index === 0) return; // Skip completed step
+                
+                const checkboxes = step.querySelectorAll('input[type="checkbox"]');
+                const checkedBoxes = step.querySelectorAll('input[type="checkbox"]:checked');
+                
+                if (checkboxes.length === checkedBoxes.length && checkboxes.length > 0) {
+                    step.classList.add('completed');
+                    step.querySelector('h3').innerHTML = step.querySelector('h3').innerHTML.replace('📥', '✅').replace('🌐', '✅').replace('⚙️', '✅').replace('🔑', '✅').replace('🔧', '✅').replace('🚀', '✅');
+                } else {
+                    step.classList.remove('completed');
+                }
+            });
+        }
+
+        updateStepStatus();
+    </script>
+</body>
+</html>
