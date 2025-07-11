@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Google Classroom Manager{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+    <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+        <i class="fas fa-sync-alt"></i> Refresh
+    </a>
+</div>
+
+{% if courses %}
+    <div class="row">
+        {% for course in courses %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-book"></i> {{ course.name }}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <strong>Section:</strong> {{ course.section or 'N/A' }}<br>
+                            <strong>Room:</strong> {{ course.room or 'N/A' }}<br>
+                            <strong>Code:</strong> <code>{{ course.enrollmentCode or 'N/A' }}</code>
+                        </p>
+                        {% if course.description %}
+                            <p class="card-text text-muted">{{ course.description[:100] }}{% if course.description|length > 100 %}...{% endif %}</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('course_details', course_id=course.id) }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-eye"></i> View Details
+                        </a>
+                        <span class="badge bg-secondary float-end">
+                            {{ course.courseState|title }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center">
+        <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+        <h3>No Courses Found</h3>
+        <p class="text-muted">You don't have any courses in Google Classroom yet.</p>
+    </div>
+{% endif %}
+
+<div class="mt-5">
+    <h3><i class="fas fa-chart-bar"></i> Quick Stats</h3>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ courses|length }}</h4>
+                            <p>Total Courses</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-book fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ courses|selectattr('courseState', 'equalto', 'ACTIVE')|list|length }}</h4>
+                            <p>Active Courses</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-play fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ courses|selectattr('courseState', 'equalto', 'ARCHIVED')|list|length }}</h4>
+                            <p>Archived Courses</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-archive fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ courses|selectattr('courseState', 'equalto', 'PROVISIONED')|list|length }}</h4>
+                            <p>Draft Courses</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-edit fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

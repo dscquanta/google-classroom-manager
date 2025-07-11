@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body text-center">
+                <i class="fas fa-google fa-4x text-primary mb-4"></i>
+                <h2 class="card-title">Welcome to Classroom Manager</h2>
+                <p class="card-text">
+                    Connect your Google Classroom account to manage courses, assignments, and students.
+                </p>
+                <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">
+                    <i class="fab fa-google"></i> Sign in with Google
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-book fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Course Management</h5>
+                <p class="card-text">View and manage all your Google Classroom courses in one place.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-tasks fa-3x text-warning mb-3"></i>
+                <h5 class="card-title">Assignment Tracking</h5>
+                <p class="card-text">Track assignments, submissions, and grades across all courses.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-3x text-info mb-3"></i>
+                <h5 class="card-title">Student Management</h5>
+                <p class="card-text">View student rosters and monitor their progress.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

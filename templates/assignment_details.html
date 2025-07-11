@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}{{ assignment.title }} - Assignment Details{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('course_details', course_id=course_id) }}">Course</a></li>
+        <li class="breadcrumb-item active">{{ assignment.title }}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-8">
+        <h1><i class="fas fa-tasks"></i> {{ assignment.title }}</h1>
+        {% if assignment.description %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5>Description</h5>
+                    <p>{{ assignment.description }}</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle"></i> Assignment Info</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless table-sm">
+                    <tr>
+                        <td><strong>Status:</strong></td>
+                        <td><span class="badge bg-{{ 'success' if assignment.state == 'PUBLISHED' else 'warning' }}">{{ assignment.state|title }}</span></td>
+                    </tr>
+                    {% if assignment.maxPoints %}
+                    <tr>
+                        <td><strong>Max Points:</strong></td>
+                        <td>{{ assignment.maxPoints }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if assignment.dueDate %}
+                    <tr>
+                        <td><strong>Due Date:</strong></td>
+                        <td>
+                            {{ assignment.dueDate.year }}-{{ '%02d'|format(assignment.dueDate.month) }}-{{ '%02d'|format(assignment.dueDate.day) }}
+                            {% if assignment.dueTime %}
+                                <br><small>{{ '%02d'|format(assignment.dueTime.hours or 0) }}:{{ '%02d'|format(assignment.dueTime.minutes or 0) }}</small>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td><strong>Submissions:</strong></td>
+                        <td>{{ submissions|length }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <h3><i class="fas fa-file-alt"></i> Student Submissions</h3>
+    {% if submissions %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Status</th>
+                        <th>Grade</th>
+                        <th>Submission Time</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for submission in submissions %}
+                        <tr>
+                            <td>
+                                {% if submission.userId %}
+                                    <strong>Student ID:</strong> {{ submission.userId }}
+                                {% else %}
+                                    <em>Unknown Student</em>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if submission.state == 'TURNED_IN' %}
+                                    <span class="badge bg-success">Submitted</span>
+                                {% elif submission.state == 'RETURNED' %}
+                                    <span class="badge bg-info">Returned</span>
+                                {% elif submission.state == 'NEW' %}
+                                    <span class="badge bg-warning">Not Started</span>
+                                {% elif submission.state == 'CREATED' %}
+                                    <span class="badge bg-secondary">In Progress</span>
+                                {% else %}
+                                    <span class="badge bg-light text-dark">{{ submission.state|title }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if submission.assignedGrade %}
+                                    {{ submission.assignedGrade }}
+                                    {% if assignment.maxPoints %}
+                                        / {{ assignment.maxPoints }}
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">Not graded</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if submission.updateTime %}
+                                    {{ submission.updateTime[:10] }}
+                                {% else %}
+                                    <span class="text-muted">No submission</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if submission.assignmentSubmission and submission.assignmentSubmission.attachments %}
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewAttachments('{{ submission.id }}')">
+                                        <i class="fas fa-paperclip"></i> View Files
+                                    </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="text-center">
+            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+            <h5>No Submissions Yet</h5>
+            <p class="text-muted">Students haven't submitted anything for this assignment yet.</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Submission Statistics -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <h4>{{ submissions|selectattr('state', 'equalto', 'TURNED_IN')|list|length }}</h4>
+                <p>Submitted</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body text-center">
+                <h4>{{ submissions|selectattr('state', 'equalto', 'NEW')|list|length }}</h4>
+                <p>Not Started</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body text-center">
+                <h4>{{ submissions|selectattr('state', 'equalto', 'RETURNED')|list|length }}</h4>
+                <p>Returned</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-secondary text-white">
+            <div class="card-body text-center">
+                <h4>{{ submissions|selectattr('assignedGrade')|list|length }}</h4>
+                <p>Graded</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function viewAttachments(submissionId) {
+    alert('Attachment viewing feature coming soon!\nSubmission ID: ' + submissionId);
+}
+</script>
+{% endblock %}

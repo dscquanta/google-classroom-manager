@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.name }} - Course Details{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Dashboard</a></li>
+        <li class="breadcrumb-item active">{{ course.name }}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-8">
+        <h1><i class="fas fa-book"></i> {{ course.name }}</h1>
+        {% if course.description %}
+            <p class="lead">{{ course.description }}</p>
+        {% endif %}
+    </div>
+    <div class="col-md-4 text-end">
+        <span class="badge bg-{{ 'success' if course.courseState == 'ACTIVE' else 'secondary' }} fs-6">
+            {{ course.courseState|title }}
+        </span>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle"></i> Course Information</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td><strong>Section:</strong></td>
+                        <td>{{ course.section or 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Room:</strong></td>
+                        <td>{{ course.room or 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Enrollment Code:</strong></td>
+                        <td><code>{{ course.enrollmentCode or 'N/A' }}</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Created:</strong></td>
+                        <td>{{ course.creationTime[:10] if course.creationTime else 'N/A' }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-users"></i> Students ({{ students|length }})</h5>
+            </div>
+            <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                {% if students %}
+                    <div class="list-group list-group-flush">
+                        {% for student in students %}
+                            <div class="list-group-item d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <strong>{{ student.profile.name.fullName }}</strong><br>
+                                    <small class="text-muted">{{ student.profile.emailAddress }}</small>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">No students enrolled yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <h3><i class="fas fa-tasks"></i> Assignments ({{ assignments|length }})</h3>
+    {% if assignments %}
+        <div class="row">
+            {% for assignment in assignments %}
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">{{ assignment.title }}</h6>
+                            <span class="badge bg-{{ 'success' if assignment.state == 'PUBLISHED' else 'warning' }}">
+                                {{ assignment.state|title }}
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            {% if assignment.description %}
+                                <p class="card-text">{{ assignment.description[:100] }}{% if assignment.description|length > 100 %}...{% endif %}</p>
+                            {% endif %}
+                            
+                            {% if assignment.dueDate %}
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar"></i> 
+                                    Due: {{ assignment.dueDate.year }}-{{ '%02d'|format(assignment.dueDate.month) }}-{{ '%02d'|format(assignment.dueDate.day) }}
+                                    {% if assignment.dueTime %}
+                                        at {{ '%02d'|format(assignment.dueTime.hours or 0) }}:{{ '%02d'|format(assignment.dueTime.minutes or 0) }}
+                                    {% endif %}
+                                </small>
+                            {% endif %}
+                            
+                            {% if assignment.maxPoints %}
+                                <div class="mt-2">
+                                    <span class="badge bg-info">{{ assignment.maxPoints }} points</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer">
+                            <a href="{{ url_for('assignment_details', course_id=course.id, assignment_id=assignment.id) }}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-eye"></i> View Submissions
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center">
+            <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+            <h5>No Assignments Yet</h5>
+            <p class="text-muted">This course doesn't have any assignments yet.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
